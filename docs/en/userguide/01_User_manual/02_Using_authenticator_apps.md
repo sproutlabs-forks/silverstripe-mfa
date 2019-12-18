@@ -1,5 +1,7 @@
+---
 title: Using authenticator apps
 summary: How to acquire and configure an Authenticator app for your phone
+---
 
 # Using authenticator apps
 
@@ -40,3 +42,5 @@ phone.
 ![A screenshot of a user entering a verification code as requested during login when an Authenticator app has been set up](../_images/01-02-4-totp-login.png)
 
 Enter the code correctly, and you will be automatically directed to the CMS.
+
+[CHILDREN]
