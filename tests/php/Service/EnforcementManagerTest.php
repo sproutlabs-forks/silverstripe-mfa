@@ -10,7 +10,7 @@ use SilverStripe\MFA\Service\MethodRegistry;
 use SilverStripe\MFA\Tests\Stub\BasicMath\Method as BasicMathMethod;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\Security\Member;
-use SilverStripe\SiteConfig\SiteConfig;
+use Glasshouse\Core\Models\VisualConfig;
 
 class EnforcementManagerTest extends SapphireTest
 {
@@ -32,7 +32,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testUserCanSkipWhenMFAIsDisabled()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
         EnforcementManager::config()->set('enabled', false);
 
         /** @var Member $member */
@@ -42,7 +42,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testUserCanSkipWhenNoMethodsAreAvailable()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
         MethodRegistry::config()->set('methods', null);
 
         /** @var Member $member */
@@ -52,7 +52,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testUserWithoutCMSAccessCanSkipWhenCMSAccessIsRequired()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
 
         /** @var Member $member */
         $member = $this->objFromFixture(Member::class, 'sammy_smith');
@@ -61,7 +61,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testUserWithoutCMSAccessCannotSkipWhenCMSAccessIsNotRequired()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
         EnforcementManager::config()->set('requires_admin_access', false);
 
         /** @var Member $member */
@@ -71,7 +71,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testCannotSkipWhenMFAIsRequiredWithNoGracePeriod()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
 
         /** @var Member $member */
         $member = $this->objFromFixture(Member::class, 'reports_user');
@@ -80,7 +80,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testCanSkipWhenMFAIsRequiredWithGracePeriodExpiringInFuture()
     {
-        $this->setSiteConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2019-01-30']);
+        $this->setVisualConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2019-01-30']);
 
         /** @var Member $member */
         $member = $this->objFromFixture(Member::class, 'reports_user');
@@ -89,7 +89,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testCannotSkipWhenMFAIsRequiredWithGracePeriodExpiringInPast()
     {
-        $this->setSiteConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2018-12-25']);
+        $this->setVisualConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2018-12-25']);
 
         /** @var Member $member */
         $member = $this->objFromFixture(Member::class, 'reports_user');
@@ -98,7 +98,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testCannotSkipWhenMemberHasRegisteredAuthenticationMethodsSetUp()
     {
-        $this->setSiteConfig(['MFARequired' => false]);
+        $this->setVisualConfig(['MFARequired' => false]);
         // Sally has "backup codes" as a registered authentication method already
         /** @var Member $member */
         $member = $this->objFromFixture(Member::class, 'sally_smith');
@@ -109,7 +109,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testCanSkipWhenMFAIsOptional()
     {
-        $this->setSiteConfig(['MFARequired' => false]);
+        $this->setVisualConfig(['MFARequired' => false]);
         // Anonymous admin user
         $memberId = $this->logInWithPermission();
         /** @var Member $member */
@@ -162,7 +162,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testShouldRedirectToMFAWhenMFAIsRequired()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
         /** @var Member $member */
         $member = $this->objFromFixture(Member::class, 'sully_smith');
         $this->logInAs($member);
@@ -172,7 +172,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testShouldRedirectToMFAWhenMFAIsRequiredWithGracePeriodExpiringInFuture()
     {
-        $this->setSiteConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2019-01-30']);
+        $this->setVisualConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2019-01-30']);
 
         /** @var Member&MemberExtension $member */
         $member = $this->objFromFixture(Member::class, 'sully_smith');
@@ -183,7 +183,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testShouldRedirectToMFAWhenMFAIsRequiredWithGracePeriodExpiringInPast()
     {
-        $this->setSiteConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2018-12-25']);
+        $this->setVisualConfig(['MFARequired' => true, 'MFAGracePeriodExpires' => '2018-12-25']);
 
         /** @var Member&MemberExtension $member */
         $member = $this->objFromFixture(Member::class, 'sully_smith');
@@ -194,7 +194,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testShouldRedirectToMFAWhenMFAIsOptionalAndHasNotBeenSkipped()
     {
-        $this->setSiteConfig(['MFARequired' => false]);
+        $this->setVisualConfig(['MFARequired' => false]);
 
         /** @var Member|MemberExtension $member */
         $member = $this->objFromFixture(Member::class, 'sally_smith');
@@ -207,7 +207,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testShouldNotRedirectToMFAWhenMFAIsOptionalAndHasBeenSkipped()
     {
-        $this->setSiteConfig(['MFARequired' => false]);
+        $this->setVisualConfig(['MFARequired' => false]);
 
         /** @var Member&MemberExtension $member */
         $member = $this->objFromFixture(Member::class, 'sully_smith');
@@ -227,7 +227,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testShouldNotRedirectToMFAWhenNoMethodsAreRegisteredInTheSystem()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
         MethodRegistry::config()->set('methods', []);
 
         /** @var Member $member */
@@ -239,7 +239,7 @@ class EnforcementManagerTest extends SapphireTest
 
     public function testGracePeriodIsNotInEffectWhenMFAIsRequiredButNoGracePeriodIsSet()
     {
-        $this->setSiteConfig(['MFARequired' => true]);
+        $this->setVisualConfig(['MFARequired' => true]);
         $this->assertFalse(EnforcementManager::create()->isGracePeriodInEffect());
     }
 
@@ -254,14 +254,14 @@ class EnforcementManagerTest extends SapphireTest
     }
 
     /**
-     * Helper method for changing the current SiteConfig values
+     * Helper method for changing the current VisualConfig values
      *
      * @param array $data
      */
-    protected function setSiteConfig(array $data)
+    protected function setVisualConfig(array $data)
     {
-        $siteConfig = SiteConfig::current_site_config();
-        $siteConfig->update($data);
-        $siteConfig->write();
+        $visualConfig = VisualConfig::current_visual_config();
+        $visualConfig->update($data);
+        $visualConfig->write();
     }
 }

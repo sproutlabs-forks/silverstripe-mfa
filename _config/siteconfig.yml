@@ -1,6 +1,14 @@
 ---
 Name: mfa-siteconfig
 ---
+
+Glasshouse\Core\Models\VisualConfig:
+  db:
+    MFAGracePeriodExpires: Date
+    MFARequired: Boolean
+  defaults:
+    MFARequired: false
+
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - SilverStripe\MFA\Extension\SiteConfigExtension

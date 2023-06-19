@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SilverStripe\MFA\Service;
 
+use Glasshouse\Core\Models\VisualConfig;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
@@ -158,21 +159,21 @@ class EnforcementManager
      */
     public function isMFARequired(): bool
     {
-        /** @var SiteConfig&SiteConfigExtension $siteConfig */
-        $siteConfig = SiteConfig::current_site_config();
+        /** @var VisualConfig $visualConfig */
+        $visualConfig = VisualConfig::current_visual_config();
 
-        $isRequired = $siteConfig->MFARequired;
+        $isRequired = $visualConfig->MFARequired;
         if (!$isRequired) {
             return false;
         }
 
-        $gracePeriod = $siteConfig->MFAGracePeriodExpires;
+        $gracePeriod = $visualConfig->MFAGracePeriodExpires;
         if ($isRequired && !$gracePeriod) {
             return true;
         }
 
         /** @var DBDate $gracePeriodDate */
-        $gracePeriodDate = $siteConfig->dbObject('MFAGracePeriodExpires');
+        $gracePeriodDate = $visualConfig->dbObject('MFAGracePeriodExpires');
         if ($isRequired && $gracePeriodDate->InPast()) {
             return true;
         }
@@ -188,21 +189,21 @@ class EnforcementManager
      */
     public function isGracePeriodInEffect(): bool
     {
-        /** @var SiteConfig&SiteConfigExtension $siteConfig */
-        $siteConfig = SiteConfig::current_site_config();
+        /** @var VisualConfig $visualConfig */
+        $visualConfig = VisualConfig::current_visual_config();
 
-        $isRequired = $siteConfig->MFARequired;
+        $isRequired = $visualConfig->MFARequired;
         if (!$isRequired) {
             return false;
         }
 
-        $gracePeriod = $siteConfig->MFAGracePeriodExpires;
+        $gracePeriod = $visualConfig->MFAGracePeriodExpires;
         if (!$gracePeriod) {
             return false;
         }
 
         /** @var DBDate $gracePeriodDate */
-        $gracePeriodDate = $siteConfig->dbObject('MFAGracePeriodExpires');
+        $gracePeriodDate = $visualConfig->dbObject('MFAGracePeriodExpires');
         if ($gracePeriodDate->InPast()) {
             return false;
         }

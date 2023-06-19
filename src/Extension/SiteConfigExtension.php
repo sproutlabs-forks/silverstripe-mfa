@@ -2,22 +2,15 @@
 
 namespace SilverStripe\MFA\Extension;
 
-use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\OptionsetField;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\View\Requirements;
 
-/**
- * Adds multi-factor authentication related settings to the SiteConfig "Access" tab
- *
- * @property bool MFARequired
- * @property string MFAGracePeriodExpires
- */
-class SiteConfigExtension extends DataExtension
+class SiteConfigExtension extends Extension
 {
     /**
      * A URL that will help CMS users find out more information about multi-factor authentication
@@ -28,15 +21,6 @@ class SiteConfigExtension extends DataExtension
     // phpcs:disable
     private static $mfa_help_link = 'https://userhelp.silverstripe.org/en/4/optional_features/multi-factor_authentication/';
     // phpcs:enable
-
-    private static $db = [
-        'MFARequired' => 'Boolean',
-        'MFAGracePeriodExpires' => 'Date',
-    ];
-
-    private static $defaults = [
-        'MFARequired' => false,
-    ];
 
     public function updateCMSFields(FieldList $fields)
     {

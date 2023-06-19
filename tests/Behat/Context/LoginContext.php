@@ -30,12 +30,12 @@ class LoginContext extends CMSLoginContext
      */
     public function multiFactorAuthenticationIsOptional()
     {
-        /** @var SiteConfig&SiteConfigExtension $siteConfig */
-        $siteConfig = SiteConfig::current_site_config();
-        assertNotNull($siteConfig, 'Current SiteConfig record could not be found!');
+        /** @var VisualConfig $visualConfig- */
+        $visualConfig = VisualConfig::current_site_config();
+        assertNotNull($visualConfig, 'Current VisualConfig record could not be found!');
 
-        $siteConfig->MFARequired = false;
-        $siteConfig->write();
+        $visualConfig->MFARequired = false;
+        $visualConfig->write();
     }
 
     /**

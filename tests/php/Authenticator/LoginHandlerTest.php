@@ -214,7 +214,7 @@ class LoginHandlerTest extends FunctionalTest
      */
     public function testCannotSkipMFA($mfaRequired, $member = 'robbie')
     {
-        $this->setSiteConfig(['MFARequired' => $mfaRequired]);
+        $this->setVisualConfig(['MFARequired' => $mfaRequired]);
 
         if ($member) {
             $this->scaffoldPartialLogin($this->objFromFixture(Member::class, $member));
@@ -245,13 +245,13 @@ class LoginHandlerTest extends FunctionalTest
     public function testSkipRegistration($memberFixture, $mfaRequiredInGrace = false, $expectedRedirect = null)
     {
         if ($mfaRequiredInGrace) {
-            $this->setSiteConfig([
+            $this->setVisualConfig([
                 'MFARequired' => true,
                 'MFAGracePeriodExpires' => DBDatetime::now()
                     ->setValue(strtotime('+1 day', DBDatetime::now()->getTimestamp()))->Rfc2822()
             ]);
         } else {
-            $this->setSiteConfig(['MFARequired' => false]);
+            $this->setVisualConfig(['MFARequired' => false]);
         }
 
         if (!$expectedRedirect) {
@@ -625,14 +625,14 @@ class LoginHandlerTest extends FunctionalTest
     }
 
     /**
-     * Helper method for changing the current SiteConfig values
+     * Helper method for changing the current VisualConfig values
      *
      * @param array $data
      */
-    protected function setSiteConfig(array $data)
+    protected function setVisualConfig(array $data)
     {
-        $siteConfig = SiteConfig::current_site_config();
-        $siteConfig->update($data);
-        $siteConfig->write();
+        $visualConfig = VisualConfig::current_visual_config();
+        $visualConfig->update($data);
+        $visualConfig->write();
     }
 }
